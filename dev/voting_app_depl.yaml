@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: voting
+  labels:
+    name: voting-label
+spec:
+  type: NodePort
+  ports:
+    - port : 80
+      targetPort: 80
+      nodePort: 30005
+  selector:
+    app: result-app-pod-python
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result-app-deploy
+  labels:
+    app: python-result-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: result-app-pod-python
+  template:
+    metadata:
+      labels:
+        app: result-app-pod-python
+    spec:
+      containers:
+        - name: result-app-container
+          image: kodekloud/examplevotingapp_vote:v1
+          ports:
+            - containerPort: 80
+          
